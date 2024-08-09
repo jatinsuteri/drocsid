@@ -1,6 +1,6 @@
+from drocsid import db,login_manager
 from flask_login import UserMixin
 import datetime
-from app import db, login_manager  # Use relative import or modify the import as per your application structure
 
 @login_manager.user_loader
 def load_user(user_id):

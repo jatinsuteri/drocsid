@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+    #chat {
+        width: 50%;
+    }
+
+    #chat input {
+        width: 99%;
+    }
+
+    ul {
+        height: 500px;
+        background-color: white;
+        overflow-y: scroll;
+    }
+
+    li {
+        list-style: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="chat">
+        <ul id="chat-messages"></ul>
+        <input type="text" id="message" placeholder="Enter a Message">
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+        var socket = io({autoConnect: false});
+        var username = "{{username}}";
+        var room = "{{ room }}"; 
+
+        socket.connect();
+        
+        socket.on('connect', function() {
+            socket.emit('user_join', { username: username, room: room });
+        });
+
+        document.getElementById("message").addEventListener("keyup", function(event) {
+            if (event.key === 'Enter') {
+                let message = document.getElementById("message").value;
+                socket.emit("new_message", { message: message, username: username, room: room });
+                document.getElementById("message").value = ""; 
+            }
+        });
+        
+        socket.on("chat", function(data) {  
+            let ul = document.getElementById("chat-messages");
+            let li = document.createElement('li');
+            li.appendChild(document.createTextNode(data["username"] + ": " + data["message"])); 
+            ul.appendChild(li);
+            ul.scrollTop = ul.scrollHeight;  
+        });
+
+    </script>
+</body>
+</html>
