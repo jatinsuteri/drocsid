@@ -12,13 +12,20 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.png')
-    messages = db.relationship('Messages', backref='author', lazy=True)
+    messages = db.relationship('Message', backref='author', lazy=True)
     
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
-class Messages(db.Model):
+
+class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    time_posted = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
-    content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    room = db.Column(db.String(50), nullable=False)
+    username = db.Column(db.String(50), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, nullable = False ,default=datetime.datetime.now)
+
+    def __repr__(self):
+        return f'<Message {self.message} by {self.username} in {self.room}>'
+
+    

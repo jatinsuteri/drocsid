@@ -2,7 +2,7 @@ from flask import  url_for, redirect, render_template, flash, request
 from flask_login import current_user, login_user, logout_user, login_required
 from drocsid.forms import RegisterForm, LoginForm
 from drocsid import app,db,bcrypt
-from drocsid.models import User
+from drocsid.models import User,Message
 
     
 @app.route("/")
@@ -51,8 +51,7 @@ def main():
     return render_template('main.html')
 
 @app.route('/chat', defaults={'room': None})
-@app.route('/chat/<room>')
 @login_required
 def chat(room):
-    print(room)
-    return render_template('chat.html', username=current_user.username, room=room)
+    messages = Message.query.filter_by(room=room).order_by(Message.timestamp.asc()).all()
+    return render_template('chat.html', username=current_user.username, room=room, messages=messages)

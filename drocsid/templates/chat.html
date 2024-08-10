@@ -51,6 +51,14 @@
                 document.getElementById("message").value = ""; 
             }
         });
+
+        socket.on("join", function(data){
+            let ul = document.getElementById("chat-messages");
+            let li = document.createElement('li')
+            li.appendChild(document.createTextNode(data["username"] + " has joined the room"));
+            ul.appendChild(li)
+            ul.scrollTop = ul.scrollHeight;  
+        });
         
         socket.on("chat", function(data) {  
             let ul = document.getElementById("chat-messages");
