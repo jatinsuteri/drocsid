@@ -29,7 +29,12 @@
 
 <body>
     <div id="chat">
-        <ul id="chat-messages"></ul>
+        
+        <ul id="chat-messages">
+            {% for msg in messages %}
+                <li>{{ msg.username }}: {{ msg.message }}</li>
+            {% endfor %}
+        </ul>
         <input type="text" id="message" placeholder="Enter a Message">
     </div>
 

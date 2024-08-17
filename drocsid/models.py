@@ -1,4 +1,4 @@
-from drocsid import db,login_manager
+from drocsid.extension import db, login_manager
 from flask_login import UserMixin
 import datetime
 
@@ -17,15 +17,13 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
-
 class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)  
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False) 
     room = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(50), nullable=False)
     message = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, nullable = False ,default=datetime.datetime.now)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
 
-    def __repr__(self):
+    def __repr__(self): 
         return f'<Message {self.message} by {self.username} in {self.room}>'
-
-    
