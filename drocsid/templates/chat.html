@@ -7,27 +7,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+    body.dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    
     #chat {
         width: 50%;
     }
 
     #chat input {
-        width: 99%;
+    width: 99%;
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+ul {
+    height: 500px;
+    background-color: #1e1e1e;
+    overflow-y: scroll;
+    color: #e0e0e0;
+}
+
+li {
+    list-style: none;
+}
+
+    #user-sidebar {
+        width: 30%;
+        padding: 20px;
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+        overflow-y: auto;
     }
 
-    ul {
-        height: 500px;
-        background-color: white;
-        overflow-y: scroll;
-    }
 
-    li {
-        list-style: none;
+    #user-sidebar div {
+        margin-bottom: 10px;
+        font-weight: bold;
     }
     </style>
 </head>
 
 <body>
+    <button id="dark-mode-toggle">Toggle Dark Mode on/off</button>
+
     <div id="chat">
         
         <ul id="chat-messages">
@@ -36,7 +61,13 @@
             {% endfor %}
         </ul>
         <input type="text" id="message" placeholder="Enter a Message">
+        <button id="leave-room">Leave Room</button>
     </div>
+
+    <div id="user-sidebar">
+        <!-- Users will be added here dynamically -->
+    </div>    
+
 
     <script type="text/javascript" charset="utf-8">
         var socket = io({autoConnect: false});
@@ -57,12 +88,33 @@
             }
         });
 
-        socket.on("join", function(data){
-            let ul = document.getElementById("chat-messages");
-            let li = document.createElement('li')
-            li.appendChild(document.createTextNode(data["username"] + " has joined the room"));
-            ul.appendChild(li)
-            ul.scrollTop = ul.scrollHeight;  
+        document.getElementById("leave-room").addEventListener("click", function() {
+            socket.emit('leave', { username: username, room: room });
+            window.location.href = "/main";
+        });
+
+        window.onbeforeunload = function() {
+            socket.emit('leave', {username: username, room: room});
+        };
+        
+        socket.on('user_joined', function(data) {
+            let sidebar = document.getElementById('user-sidebar');
+            sidebar.innerHTML = ''; // Clear the sidebar
+            data.users.forEach(function(user) {
+                let userElement = document.createElement('div');
+                userElement.textContent = user;
+                sidebar.appendChild(userElement);
+            });
+        });
+
+        socket.on('user_left', function(data) {
+            let sidebar = document.getElementById('user-sidebar');
+            sidebar.innerHTML = ''; // Clear the sidebar
+            data.users.forEach(function(user) {
+                let userElement = document.createElement('div');
+                userElement.textContent = user;
+                sidebar.appendChild(userElement);
+            });
         });
         
         socket.on("chat", function(data) {  
@@ -71,6 +123,23 @@
             li.appendChild(document.createTextNode(data["username"] + ": " + data["message"])); 
             ul.appendChild(li);
             ul.scrollTop = ul.scrollHeight;  
+        });
+        
+        document.getElementById("dark-mode-toggle").addEventListener("click", function() {
+            document.body.classList.toggle("dark-mode");
+
+            if (document.body.classList.contains("dark-mode")) {
+                localStorage.setItem("theme", "dark");
+            } else {
+                localStorage.setItem("theme", "light");
+            }
+        });
+
+        window.addEventListener("load", function() {
+            const theme = localStorage.getItem("theme");
+            if (theme === "dark") {
+                document.body.classList.add("dark-mode");
+            }
         });
 
     </script>
