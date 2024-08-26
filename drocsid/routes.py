@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from drocsid.forms import RegisterForm, LoginForm
 from drocsid import app,bcrypt
 from .extension import db
-from drocsid.models import User,Message
+from drocsid.models import User,Message,Room
 
     
 @app.route("/")
@@ -49,10 +49,28 @@ def logout():
 @app.route('/main')
 @login_required
 def main():
-    return render_template('main.html')
+    rooms = Room.query.all()
+    # if request.method == "POST":
+    #     room = Room(name = )  
+    return render_template('main.html', rooms = rooms)
 
-@app.route('/chat/<room>', methods=["GET", "POST"])
+@app.route('/create_room', methods=['POST',"GET"])
 @login_required
-def chat(room):
-    messages = Message.query.filter_by(room=room).order_by(Message.timestamp.asc()).all()
+def create_room():
+    room_name = request.form['room_name']
+    if Room.query.filter_by(name=room_name).first():
+        flash('Room name already exists.', 'danger')
+    else:
+        new_room = Room(name=room_name, creator=current_user)
+        db.session.add(new_room)
+        db.session.commit()
+        flash('Room created successfully!', 'success')
+    return redirect(url_for('main'))
+
+
+@app.route('/chat/<int:room_id>')
+@login_required
+def chat(room_id):
+    room = Room.query.get_or_404(room_id) 
+    messages = Message.query.filter_by(room_id=room_id).order_by(Message.timestamp.asc()).all()  # Use room_id directly
     return render_template('chat.html', username=current_user.username, room=room, messages=messages)
