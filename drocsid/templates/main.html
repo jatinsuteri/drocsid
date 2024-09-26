@@ -21,23 +21,14 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h2>Create a New Room</h2>
-        <form method="POST" action="{{ url_for('create_room') }}" class="mb-4">
-            <div class="form-group">
-                <input type="text" class="form-control" name="room_name" placeholder="Room Name" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Create Room</button>
-        </form>
+    <div class="container mt-5">
+        <h1>Welcome to the Main Page, {{ current_user.username }}!</h1>
+        <p>This is the main page of the application.</p>
 
-        <h3>Your Rooms</h3>
-        <ul class="list-group">
-            {% for room in user_rooms %}
-                <li class="list-group-item">
-                    <a href="{{ url_for('chat', room_id=room.id) }}">{{ room.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+        <h3>Select a Room to Join:</h3>
+        <a class="btn btn-primary" href="{{ url_for('chat', room='general') }}">Join Room 1</a>
+        <a class="btn btn-primary" href="{{ url_for('chat', room='tech') }}">Join Room 2</a>
+        <a class="btn btn-primary" href="{{ url_for('chat', room='games') }}">Join Room 3</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
