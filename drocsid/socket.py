@@ -2,7 +2,7 @@ from flask_socketio import emit, join_room, leave_room
 from flask_login import current_user
 from .extension import socketio, db
 from drocsid.models import Message
-from flask import redirect, url_for
+from drocsid.models import User
 
 connected_users = {}
 
@@ -25,26 +25,47 @@ def handle_user_join(data):
 
 @socketio.on('new_message')
 def handle_new_message(data):
-    room = data['room'] 
+    room = data['room']
     message = data['message']
     currentuser = current_user.username
-    print(f"New message from {current_user.username} in {room}: {message}")
-    new_message = Message(room=room, username=currentuser, user_id=current_user.id, message=message)
-    db.session.add(new_message)
-    db.session.commit()
-    emit("chat", {"message": message, "username": current_user.username}, to=room)
+    
+    if room.startswith('dm_'):
+        dm_username = room[3:]
+        dm_user = User.query.filter_by(username=dm_username).first()
+        if dm_user:
+            new_message = Message(
+                user_id=current_user.id,
+                recipient_id=dm_user.id,
+                username=currentuser,
+                message=message
+            )
+            db.session.add(new_message)
+            db.session.commit()
+            emit("chat", {"message": message, "username": currentuser}, to=room)
+    else:
+        new_message = Message(room=room, username=currentuser, user_id=current_user.id, message=message)
+        db.session.add(new_message)
+        db.session.commit()
+        emit("chat", {"message": message, "username": currentuser}, to=room)
+
+@socketio.on('join')
+def on_join(data):
+    username = data['username']
+    room = data['room']
+    join_room(room)
+    if room not in connected_users:
+        connected_users[room] = set()
+    connected_users[room].add(username)
+    emit('user_joined', {'user': username, 'users': list(connected_users[room])}, room=room)
 
 @socketio.on('leave')
-def handle_leave(data):
-    room = data['room']
+def on_leave(data):
     username = data['username']
+    room = data['room']
     leave_room(room)
-
     if room in connected_users and username in connected_users[room]:
         connected_users[room].remove(username)
-
-    emit('user_left', {'users': connected_users.get(room, [])}, room=room)  
-    print(f"{username} has left room: {room}")
+        emit('user_left', {'user': username, 'users': list(connected_users[room])}, room=room)
 
 @socketio.on('disconnect')
 def handle_disconnect():

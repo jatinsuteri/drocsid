@@ -4,7 +4,178 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title> Register </title>
-				 
+		<style>
+			/* Base styles and resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'gg sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #313338;
+    line-height: 1.6;
+    color: #dcddde;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Content section styling */
+.content-section {
+    background-color: #2b2d31;
+    padding: 2rem;
+    border-radius: 25px;
+    max-width: 480px;
+    width: 100%;
+    margin: 2rem;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 2rem;
+}
+
+/* Legend styling */
+.border-bottom {
+    border-bottom: none;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+}
+
+/* Label styling */
+.form-control-label {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #b5bac1;
+    text-transform: uppercase;
+}
+
+/* Input field styling */
+.form-control-lg {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    border: none;
+    border-radius: 13px;
+    background-color: #1e1f22;
+    color: #dcddde;
+    transition: border 0.15s ease, background-color 0.15s ease;
+}
+
+.form-control-lg:focus {
+    outline: none;
+    border: 1px solid #00a8fc;
+    background-color: #1e1f22;
+}
+
+.form-control-lg:hover {
+    background-color: #1a1b1e;
+}
+
+/* Invalid input styling */
+.is-invalid {
+    border: 1px solid #fa777c;
+}
+
+.is-invalid:focus {
+    border: 1px solid #fa777c;
+}
+
+/* Error message styling */
+.invalid-feedback {
+    color: #fa777c;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+/* Submit button styling */
+.btn {
+    display: block;
+    width: 100%;
+    font-weight: 500;
+    text-align: center;
+    padding: 0.875rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 13px;
+    transition: background-color 0.17s ease;
+    cursor: pointer;
+    margin-top: 1.5rem;
+}
+
+.btn-outline-info {
+    color: #fff;
+    background-color: #5865f2;
+    border: none;
+}
+
+.btn-outline-info:hover {
+    background-color: #4752c4;
+}
+
+/* Additional Discord-like elements */
+fieldset {
+    border: none;
+    padding: 0;
+}
+
+/* Input wrapper for better spacing */
+.form-group:not(:last-child) {
+    position: relative;
+}
+
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .content-section {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .border-bottom {
+        font-size: 1.25rem;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Add smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Optional: Add animation for form appearance */
+@keyframes formAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content-section {
+    animation: formAppear 0.3s ease-out;
+}
+		</style>		 
 	</head>
 	<div class="content-section">
 		<form method="post" action="">
@@ -71,11 +242,12 @@
 		<div class="form-group">
 			{{ form.submit(class="btn btn-outline-info") }}
 		</div>
+		<div class="border-top pt-3">
+			<small class="text-muted">
+				Already have an account? <a href="{{url_for('login')}}" class="ml-2">Sign In</a>
+			</small> 
+		</div>
 	</form>
 </div>
-<div class="border-top pt-3">
-	<small class="text-muted">
-		already have an account? <a href="{{url_for('login')}}" class="ml-2">Sign In</a>
-	</small> 
-</div>
+
 </html>

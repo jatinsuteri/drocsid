@@ -1,9 +1,9 @@
-from flask import  url_for, redirect, render_template, flash, request
+from flask import  url_for, redirect, render_template, flash, request,jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from drocsid.forms import RegisterForm, LoginForm
 from drocsid import app,bcrypt
 from .extension import db
-from drocsid.models import User,Message
+from drocsid.models import User,Message,Friendship,FriendRequest
 
     
 @app.route("/")
@@ -56,3 +56,39 @@ def main():
 def chat(room):
     messages = Message.query.filter_by(room=room).order_by(Message.timestamp.asc()).all()
     return render_template('chat.html', username=current_user.username, room=room, messages=messages)
+
+@app.route('/friends', methods=["GET", "POST"])
+@login_required
+def friends():
+    return render_template('dm.html', username=current_user.username)
+
+# @app.route('/check_user', methods=['POST'])
+# @login_required
+# def check_user():
+#     data = request.json
+#     username = data.get('username')
+#     user = User.query.filter_by(username=username).first()
+#     return jsonify({'valid': user is not None and user != current_user})
+
+# @app.route('/chat/<room>', methods=["GET", "POST"])
+# @login_required
+# def chat(room):
+#     if room.startswith('dm_'):
+#         dm_username = room[3:]
+#         dm_user = User.query.filter_by(username=dm_username).first()
+#         if not dm_user:
+#             flash('Invalid username for DM.')
+#             return redirect(url_for('main'))
+#         messages = Message.query.filter(
+#             ((Message.user_id == current_user.id) & (Message.recipient_id == dm_user.id) & Message.is_dm) |
+#             ((Message.user_id == dm_user.id) & (Message.recipient_id == current_user.id) & Message.is_dm)
+#         ).order_by(Message.timestamp.asc()).all()
+#     else:
+#         messages = Message.query.filter_by(room=room, is_dm=False).order_by(Message.timestamp.asc()).all()
+    
+#     return render_template('chat.html', username=current_user.username, room=room, messages=messages)
+
+# #################################### ##
+
+#testing friendship system
+

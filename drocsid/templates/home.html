@@ -3,11 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>homepage</title>
+    <title>Droscid</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f4;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            padding: 10px 20px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            height: 40px;
+            width: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .navbar .app-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body>
-    <h1>frontpage?</h1>
-    <a href="{{url_for('register')}}">register</a>
-    <a href="{{url_for('login')}}">LOGIN</a>
+    <nav class="navbar">
+        <!-- Left: Logo and App Name -->
+        <div class="logo-container">
+            <div class="logo"></div> <!-- Replace with your actual logo -->
+            <div class="app-name">Droscid</div>
+        </div>
+
+        <!-- Right: Login and Register Links -->
+        <div class="nav-links">
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </nav>
+
+    <div style="padding: 20px; text-align: center;">
+        <h1>Welcome to Droscid</h1>
+        <p>Connect with your friends and chat like never before.</p>
+    </div>
 </body>
 </html>
