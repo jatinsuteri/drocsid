@@ -5,6 +5,7 @@ from .extension import db, login_manager,migrate
 
 
 app = Flask(__name__)
+app.secret_key = 'jatinsuteri'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' 
 app.config['SECRET_KEY'] = 'jatinsuteri'
 db.init_app(app)

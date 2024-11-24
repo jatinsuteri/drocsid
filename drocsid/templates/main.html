@@ -279,6 +279,20 @@ ul li:hover::before {
 .search-input:hover {
     background-color: #18191c;
 }
+#flash-messages {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    max-width: 300px;
+    opacity: 1;
+    transition: opacity 1s ease; /* Smooth fade-out effect */
+}
+
+#flash-messages .alert {
+    margin-bottom: 10px;
+}
+
     </style>
 </head>
 <body>
@@ -295,6 +309,19 @@ ul li:hover::before {
             </ul>
         </div>
     </nav>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul id="flash-messages">
+            {% for message in messages %}
+                <li class="alert alert-info">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+
+
 
     <div class="container mt-4">
         <h1>Welcome, {{ current_user.username }}!</h1>
@@ -314,36 +341,38 @@ ul li:hover::before {
         </ul>
 
         <div class="search-container">
-            <input type="text" id="user-search" class="search-input" placeholder="Search for users..." autocomplete="off">
+            <form method="POST" action="">
+            <input type="text" name="user-search" id="user-search" class="search-input" placeholder="Search for users..." autocomplete="off">
             <div class="search-icon">
                 <svg width="16" height="16" viewBox="0 0 16 16">
                     <path fill="currentColor" d="M14.793 13.793l-3.343-3.343a5.968 5.968 0 0 0 1.3-3.7c0-3.314-2.686-6-6-6S.75 3.436.75 6.75s2.686 6 6 6a5.968 5.968 0 0 0 3.7-1.3l3.343 3.343a.5.5 0 0 0 .707 0 .5.5 0 0 0 0-.707zM6.75 11.75c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"/>
                 </svg>
             </div>
+        </form>
         </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script>
-        document.getElementById('dm-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('dm-username').value;
-            fetch('/check_user', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({username: username})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.valid) {
-                    window.location.href = `/chat/dm_${username}`;
-                } else {
-                    document.getElementById('dm-error').textContent = 'User not found';
-                }
-            });
-        });
-    </script>
+    // Wait for the DOM to load
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select the flash message container
+        const flashMessages = document.getElementById('flash-messages');
+
+        if (flashMessages) {
+            // Set a timer to fade out and remove flash messages after 5 seconds
+            setTimeout(() => {
+                flashMessages.style.transition = 'opacity 1s ease';
+                flashMessages.style.opacity = 0;
+
+                // Remove the flash message from the DOM after fading out
+                setTimeout(() => {
+                    flashMessages.remove();
+                }, 1000); // Match the duration of the fade-out transition
+            }, 5000); // Delay before starting fade-out
+        }
+    });
+</script>
+
 </body>
 </html>
