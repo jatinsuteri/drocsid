@@ -53,24 +53,33 @@ def main():
         friend = request.form.get('user-search')
         user = User.query.filter_by(username=friend).first()
         if user:
-            if user == current_user:
-                flash('You cannot add yourself as a friend.')
-            elif Friendship.query.filter_by(user1_id=current_user.id, user2_id=user.id).first():
-                flash(f'You are already friends with {user.username}.')
-            elif FriendRequest.query.filter_by(sender_id=current_user.id, receiver_id=user.id).first():
-                flash(f'A friend request has already been sent to {user.username}.')
-            elif FriendRequest.query.filter_by(sender_id=user.id, receiver_id=current_user.id).first():
-                flash(f'You have already received a friend request from {user.username}.')
-            else:
-                friend_request = FriendRequest(sender_id=current_user.id, receiver_id=user.id)
-                db.session.add(friend_request)
-                db.session.commit()
-                flash(f'Friend request sent to {user.username}.')
+            func(user)
         else:
             flash('User not found.')
-        return redirect(url_for('main'))  
+        return redirect(url_for('main')) 
 
     return render_template('main.html')
+
+#route to display list of friends for the js in the main file
+#will retrn the list of friends in json format
+@app.route('/api/get_friends', methods=["GET"])
+@login_required
+def get_friends():
+    user_id = current_user.id
+    friends = db.session.query(User).join(
+        Friendship,
+        (Friendship.user1_id == user_id) & (Friendship.user2_id == User.id) |
+        (Friendship.user2_id == user_id) & (Friendship.user1_id == User.id)
+    ).all()
+
+    friends_data = [
+        {"id": friend.id, "username": friend.username, "profile_picture": None} 
+        for friend in friends
+    ]
+
+    return jsonify({"friends": friends_data})
+
+#static rooms routes
 
 @app.route('/chat/<room>', methods=["GET", "POST"])
 @login_required
@@ -109,3 +118,18 @@ def chat(room):
 
 #testing friendship system
 
+# non routes functions 
+def func(user):
+    if user == current_user:
+        flash('You cannot add yourself as a friend.')
+    elif Friendship.query.filter_by(user1_id=current_user.id, user2_id=user.id).first():
+        flash(f'You are already friends with {user.username}.')
+    elif FriendRequest.query.filter_by(sender_id=current_user.id, receiver_id=user.id).first():
+        flash(f'A friend request has already been sent to {user.username}.')
+    elif FriendRequest.query.filter_by(sender_id=user.id, receiver_id=current_user.id).first():
+        flash(f'You have already received a friend request from {user.username}.')
+    else:
+        friend_request = FriendRequest(sender_id=current_user.id, receiver_id=user.id)
+        db.session.add(friend_request)
+        db.session.commit()
+        flash(f'Friend request sent to {user.username}.')

@@ -5,324 +5,47 @@
     <title>Main Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_css.css') }}">
 
-body {
-    font-family: "sf pro display", 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #313338;
-    color: #dcddde;
-    line-height: 1.6;
-    min-height: 100vh;
-}
-
-/* Navbar styling */
-.navbar {
-    background-color: #26272a !important;
-    padding: 1rem 2rem;
-    border-bottom: 1px solid #1e1f22;
-}
-
-.navbar-brand {
-    color: #fff !important;
-    font-weight: 600;
-    font-size: 1.2rem;
-}
-
-.navbar-nav .nav-link {
-    color: #b5bac1 !important;
-    margin-left: 1.5rem;
-    font-weight: 500;
-    transition: color 0.15s ease;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #fff !important;
-}
-
-/* Main content container */
-.container {
-    max-width: 1200px;
-    padding: 2rem;
-}
-
-/* Welcome message */
-h1 {
-    color: #fff;
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-p {
-    color: #b5bac1;
-    font-size: 1rem;
-    margin-bottom: 2rem;
-}
-
-/* Room section styling */
-h2 {
-    color: #fff;
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 2rem 0 1rem;
-}
-
-/* Room list styling */
-ul {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-ul li {
-    background-color: #2b2d31;
-    border-radius: 8px;
-    transition: background-color 0.15s ease;
-}
-
-ul li:hover {
-    background-color: #393c43;
-}
-
-ul li a {
-    color: #dcddde;
-    text-decoration: none;
-    padding: 1rem;
-    display: block;
-    font-weight: 500;
-}
-
-ul li a:hover {
-    color: #fff;
-    text-decoration: none;
-}
-
-/* DM form styling */
-#dm-form {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-#dm-username {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    background-color: #1e1f22;
-    border: none;
-    border-radius: 4px;
-    color: #dcddde;
-    transition: border 0.15s ease;
-}
-
-#dm-username:focus {
-    outline: none;
-    border: 1px solid #00a8fc;
-}
-
-#dm-username::placeholder {
-    color: #72767d;
-}
-
-button[type="submit"] {
-    padding: 0.75rem 1.5rem;
-    background-color: #5865f2;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-}
-
-button[type="submit"]:hover {
-    background-color: #d92121;
-}
-
-/* Error message styling */
-#dm-error {
-    color: #fa777c;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-}
-
-/* Room card hover effect */
-ul li {
-    position: relative;
-    overflow: hidden;
-}
-
-ul li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 4px;
-    height: 100%;
-    background-color: #fb230b;
-    transform: scaleY(0);
-    transition: transform 0.2s ease;
-}
-
-ul li:hover::before {
-    transform: scaleY(1);
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .navbar {
-        padding: 0.75rem 1rem;
-    }
-    
-    .container {
-        padding: 1rem;
-    }
-    
-    h1 {
-        font-size: 1.5rem;
-    }
-    
-    ul {
-        grid-template-columns: 1fr;
-    }
-    
-    #dm-form {
-        flex-direction: column;
-    }
-    
-    button[type="submit"] {
-        width: 100%;
-    }
-}
-
-/* Animation for page load */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.container {
-    animation: fadeIn 0.3s ease-out;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #2b2d31;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #202225;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #2f3136;
-}
-/* Search container */
-.search-container {
-    position: relative;
-    max-width: 280px;
-    margin: 1rem 0;
-}
-
-/* Search input */
-.search-input {
-    width: 100%;
-    padding: 8px 32px 8px 12px;
-    background-color: #1e1f22;
-    border: none;
-    border-radius: 4px;
-    color: #dcddde;
-    font-size: 14px;
-    font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    transition: background-color 0.2s ease;
-}
-
-.search-input:focus {
-    outline: none;
-    background-color: #18191c;
-    box-shadow: 0 0 0 1px rgba(88, 101, 242, 0.3);
-}
-
-.search-input::placeholder {
-    color: #72767d;
-}
-
-/* Search icon */
-.search-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #72767d;
-    pointer-events: none;
-}
-
-/* Optional: Add hover effect */
-.search-input:hover {
-    background-color: #18191c;
-}
-#flash-messages {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-    max-width: 300px;
-    opacity: 1;
-    transition: opacity 1s ease; /* Smooth fade-out effect */
-}
-
-#flash-messages .alert {
-    margin-bottom: 10px;
-}
-
-    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
-        <a class="navbar-brand" href="#">Discord-like App ig?</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">hello</button>
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul id="flash-messages">
-            {% for message in messages %}
-                <li class="alert alert-info">{{ message }}</li>
-            {% endfor %}
+    <!-- friends  side bar thingy -->
+    <div id="sidebar">
+        <h3>Friends</h3>
+        <ul id="friends-list">
+            <!-- Friends will be dynamically inserted here -->
         </ul>
-    {% endif %}
-    {% endwith %}
+    </div>
+    
 
-
-
-
+    <div style="margin-left: 260px; padding: 20px;">
+        <!-- Main content goes here -->
+    
+        <nav class="navbar navbar-expand-lg">
+            <a class="navbar-brand" href="#">Discord-like App ig?</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">hello</button>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul id="flash-messages">
+                {% for message in messages %}
+                    <li class="alert alert-info">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+    
     <div class="container mt-4">
         <h1>Welcome, {{ current_user.username }}!</h1>
         <p>Select a chat room or start a direct message</p>
@@ -350,6 +73,7 @@ ul li:hover::before {
             </div>
         </form>
         </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -369,9 +93,57 @@ ul li:hover::before {
                 setTimeout(() => {
                     flashMessages.remove();
                 }, 1000); // Match the duration of the fade-out transition
-            }, 5000); // Delay before starting fade-out
+            }, 3000); // Delay before starting fade-out
         }
     });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // The container for the friends list
+            const friendsListContainer = document.getElementById("friends-list");
+    
+            // Example: Fetch friends dynamically from the server (API endpoint)
+            fetch('/api/get_friends') // Replace with your actual API endpoint
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.friends) {
+                        renderFriendsList(data.friends);
+                    } else {
+                        friendsListContainer.innerHTML = "<li>No friends found.</li>";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching friends:', error);
+                    friendsListContainer.innerHTML = "<li>Unable to load friends.</li>";
+                });
+    
+            // Function to render friends in the sidebar
+            function renderFriendsList(friends) {
+                friendsListContainer.innerHTML = ''; // Clear existing content
+                friends.forEach(friend => {
+                    // Create a list item for each friend
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('friend-item');
+                    listItem.innerHTML = `
+                        <img src="${friend.profile_picture || '/static/images/default_image.png'}" alt="Profile Picture">
+                        <span>${friend.username}</span>
+                    `;
+                    // Add an event listener for click actions (e.g., open chat)
+                    listItem.addEventListener('click', () => {
+                        openChatWithFriend(friend.username);
+                    });
+    
+                    // Append the list item to the container
+                    friendsListContainer.appendChild(listItem);
+                });
+            }
+    
+            // Function to handle opening a chat with a friend
+            function openChatWithFriend(friendName) {
+                alert(`Opening chat with ${friendName}`);
+                // TODO: Replace with actual logic for opening a chat window
+            }
+        });
+    
 </script>
 
 </body>
